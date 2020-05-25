@@ -44,11 +44,12 @@ return array(
 	            $filename = get('filename');
 	            $uri      = get('uri');
 	            $limit    = get('limit');
+              $mode     = get('mode');
 	            $page     = kirby()->page($uri);
 	            $file     = $page->file($filename);
 
 	        	try {
-	        		$colors = SylvainJule\ColorPalette::extractColor($file, $limit);
+	        		$colors = SylvainJule\ColorPalette::extractColor($file, $limit, $mode);
 	        		$response = array(
 			            'status' => 'success',
 			            'colors' => $colors,

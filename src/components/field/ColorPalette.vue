@@ -45,6 +45,7 @@ export default {
         extractor: Boolean,
         limit: Number,
         uri: String,
+        mode: String,
         endpoints: Object,
         autotemplate: String,
         template: String,
@@ -186,7 +187,7 @@ export default {
         },
         processImage(file) {
             this.loading = true
-            this.$api.get('color-palette/extract-image-colors', {filename: file[0].filename, uri: this.uri, limit: this.limit})
+            this.$api.get('color-palette/extract-image-colors', {filename: file[0].filename, uri: this.uri, limit: this.limit, mode: this.mode})
                 .then(response => {
                     this.palette  = response.colors
                     this.value    = ['', this.palette]
