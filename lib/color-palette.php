@@ -29,24 +29,37 @@ class ColorPalette {
 
 	}
 
+  public static function color_inverse($color){
+    $color = str_replace('#', '', $color);
+    if (strlen($color) != 6){ return '000000'; }
+    $rgb = '';
+    for ($x=0;$x<3;$x++){
+        $c = 255 - hexdec(substr($color,(2*$x),2));
+        $c = ($c < 0) ? 0 : dechex($c);
+        $rgb .= (strlen($c) < 2) ? '0'.$c : $c;
+    }
+    return '#'.$rgb;
+  }
+
   public static function getComplementary($hex) {
 
     $colors = [];
 
     $colors[] = $hex;
-
     $hsl = self::hexToHsl($hex);
 
-    $hsl[0] = (intval($hsl[0]*360) - 180) % 360;
-    $hsl[1] = intval($hsl[1]*100) < 50 ? max(intval($hsl[1]*100) + 25, 100) : min(intval($hsl[1]*100) - 25, 0);
-    $hsl[2] = intval($hsl[1]*100) < 50 ? max(intval($hsl[1]*100) + 50, 100) : min(intval($hsl[1]*100) - 50, 0);
+    $hsl[0] = ($hsl[1] * 360 - 180) / 360;
+    $hsl[1] = ($hsl[1] * 100) < 50 ? ($hsl[1] * 100 + 25) / 100 : ($hsl[1] * 100 - 25) / 100;
+    $hsl[2] = ($hsl[2] * 100) < 50 ? ($hsl[2] * 100 + 50) / 100 : ($hsl[2] * 100 - 50) / 100;
 
-    $colors[] = 'hsl('.$hsl[0].','.$hsl[1].'%,'.$hsl[2].'%)';
+    $colors[] = self::hslToHex($hsl);
+    // $colors[] = self::color_inverse($hex);
 
     return $colors;
   }
 
   public static function hexToHsl($hex) {
+        $hex = str_replace('#', '', $hex);
         $hex = array($hex[0].$hex[1], $hex[2].$hex[3], $hex[4].$hex[5]);
         $rgb = array_map(function($part) {
             return hexdec($part) / 255;
@@ -96,7 +109,7 @@ class ColorPalette {
             $b = self::hue2rgb($p, $q, $h - 1/3);
         }
 
-        return self::rgb2hex($r) . self::rgb2hex($g) . self::rgb2hex($b);
+        return '#' . self::rgb2hex($r) . self::rgb2hex($g) . self::rgb2hex($b);
     }
 
     public static function hue2rgb($p, $q, $t) {
